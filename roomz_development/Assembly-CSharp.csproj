@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\ChangeColor.cs" />
      <Compile Include="Assets\Scripts\Collision_Front.cs" />
      <Compile Include="Assets\Scripts\DisplayCameraXorZ.cs" />
      <Compile Include="Assets\Scripts\InvertCamera.cs" />
