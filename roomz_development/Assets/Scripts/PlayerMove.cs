@@ -13,22 +13,22 @@ public class PlayerMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(cam.cameraX.active)
+		if(cam.cameraZ.active)
 		{
-			if(Input.GetKey("right")){
-				gameObject.transform.Translate(-speed * Time.deltaTime, 0,0);
+			if(Input.GetKey("up")){
+				gameObject.transform.Translate(0, 0,speed * Time.deltaTime);
 			}
-			if(Input.GetKey("left")){
-				gameObject.transform.Translate(speed * Time.deltaTime, 0,0);
+			if(Input.GetKey("down")){
+				gameObject.transform.Translate(0, 0,-speed * Time.deltaTime);
 			}
 		}
 		else
 		{
-			if(Input.GetKey("right")){
-				gameObject.transform.Translate(0, 0,-speed * Time.deltaTime);
+			if(Input.GetKey("up")){
+				gameObject.transform.Translate(speed * Time.deltaTime, 0,0);
 			}
-			if(Input.GetKey("left")){
-				gameObject.transform.Translate(0, 0,speed * Time.deltaTime);
+			if(Input.GetKey("down")){
+				gameObject.transform.Translate(-speed * Time.deltaTime, 0, 0);
 			}
 		}
 	}
