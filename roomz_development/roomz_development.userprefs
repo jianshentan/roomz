@@ -1,10 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/DisplayCameraXorZ.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/SwitchCamera.cs">
     <Files>
       <File FileName="Assets/Scripts/CameraFollow.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/PlayerMove.cs" Line="16" Column="3" />
-      <File FileName="Assets/Scripts/DisplayCameraXorZ.cs" Line="4" Column="26" />
+      <File FileName="Assets/Scripts/PlayerMove.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SwitchCamera.cs" Line="11" Column="27" />
+      <File FileName="Assets/Scripts/RotateStateIcon.cs" Line="14" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

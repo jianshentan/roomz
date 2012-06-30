@@ -8,7 +8,7 @@ public class SwitchCamera : MonoBehaviour {
 	public GameObject cameraX_3;
 	public GameObject cameraZ_4;	
 	
-	public Transform player;
+	public Transform player;	
 	
 	void Start () {
 		cameraX_1 = transform.FindChild("CameraX_1").gameObject;
@@ -20,6 +20,7 @@ public class SwitchCamera : MonoBehaviour {
 		cameraZ_2.SetActiveRecursively(false);
 		cameraX_3.SetActiveRecursively(false);
 		cameraZ_4.SetActiveRecursively(false);
+		
 	}
 
 	void Update () {
@@ -48,8 +49,7 @@ public class SwitchCamera : MonoBehaviour {
 		else if(cameraZ_4.active){
 			cameraZ_4.SetActiveRecursively(false);
 			cameraX_1.SetActiveRecursively(true);
-		}
-		
+		}	
 	}
 	
 }
