@@ -3,15 +3,45 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour {
 	
-	public DisplayCameraXorZ cam;
+	public SwitchCamera cam;
 	public float speed = 500;
-
+	private bool isRotating_Left = false;
+	private Quaternion rotate_start;
+	private Quaternion rotate_end;
+	
 	void Update () {
-			if(Input.GetKey("up")){
-				gameObject.transform.Translate(speed * Time.deltaTime, 0,0);
+		// ---moving forward and backwards---
+		if(Input.GetKey("up")){
+			gameObject.transform.Translate(speed * Time.deltaTime, 0,0);
+		}
+		if(Input.GetKey("down")){
+			gameObject.transform.Translate(-speed * Time.deltaTime, 0, 0);
+		}
+		
+		// ---rotating---
+		if(isRotating_Left){
+			transform.Rotate(0,-90f*Time.deltaTime,0);
+			rotate_end = transform.rotation;
+			if(Quaternion.Angle(rotate_start, rotate_end) > 90){
+				isRotating_Left = false;	
 			}
-			if(Input.GetKey("down")){
-				gameObject.transform.Translate(-speed * Time.deltaTime, 0, 0);
-			}
+		}
+	}
+	
+	public void rotateLeft(){
+		rotate_start = transform.rotation;
+		isRotating_Left = true;
+	}
+	
+	IEnumerator Rotation (Transform thisTransform, Vector3 degrees, float time) {
+	    Quaternion startRotation = thisTransform.rotation;
+	    Quaternion endRotation = thisTransform.rotation * Quaternion.Euler(degrees);
+	    float rate = 1/time;
+	    float t = 0;
+	    while (t < 1.0) {
+	        t += Time.deltaTime * rate;
+	        thisTransform.rotation = Quaternion.Slerp(startRotation, endRotation, t);
+			yield return t; 
+   		}
 	}
 }
