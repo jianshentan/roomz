@@ -4,7 +4,8 @@ using System.Collections;
 public class PlayerMove : MonoBehaviour {
 	
 	public SwitchCamera cam;
-	public float speed = 500;
+	public float speed;
+	public float rotateSpeed;
 	private bool isRotating_Left = false;
 	private bool isRotating_Right = false;
 	private Quaternion rotate_start;
@@ -12,23 +13,25 @@ public class PlayerMove : MonoBehaviour {
 	
 	void Update () {
 		// ---moving forward and backwards---
-		if(Input.GetKey("up")){
-			gameObject.transform.Translate(speed * Time.deltaTime, 0,0);
-		}
-		if(Input.GetKey("down")){
-			gameObject.transform.Translate(-speed * Time.deltaTime, 0, 0);
+		if(!isRotating_Left && !isRotating_Right){ //-while not rotating
+			if(Input.GetKey("up")){
+				gameObject.transform.Translate(-speed * Time.deltaTime, 0,0);
+			}
+			if(Input.GetKey("down")){
+				gameObject.transform.Translate(speed * Time.deltaTime, 0, 0);
+			}
 		}
 		
 		// ---rotating---
 		if(isRotating_Left){
-			transform.Rotate(0,-90f*Time.deltaTime,0);
+			transform.Rotate(0,-90f*Time.deltaTime*rotateSpeed,0);
 			rotate_end = transform.rotation;
 			if(Quaternion.Angle(rotate_start, rotate_end) > 90){
 				isRotating_Left = false;	
 			}
 		}
 		if(isRotating_Right){
-			transform.Rotate(0,90f*Time.deltaTime, 0);
+			transform.Rotate(0,90f*Time.deltaTime*rotateSpeed, 0);
 			rotate_end = transform.rotation;
 			if(Quaternion.Angle(rotate_start,rotate_end) > 90){
 				isRotating_Right = false;

@@ -50,7 +50,7 @@ public class SwitchCamera : MonoBehaviour {
 	IEnumerator rotateLeft(){
 		player.GetComponent<PlayerMove>().rotateLeft();
 		
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(1f);
 
 		if(cameraX_1.active){
 			cameraX_1.SetActiveRecursively(false);
@@ -73,7 +73,7 @@ public class SwitchCamera : MonoBehaviour {
 	IEnumerator rotateRight(){
 		player.GetComponent<PlayerMove>().rotateRight();
 		
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(1f);
 
 		if(cameraX_1.active){
 			cameraX_1.SetActiveRecursively(false);

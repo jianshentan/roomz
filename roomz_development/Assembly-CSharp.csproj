@@ -47,7 +47,6 @@
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\GUI_Gameplay.cs" />
      <Compile Include="Assets\Scripts\InvertCamera.cs" />
-     <Compile Include="Assets\Scripts\PlayerCollision.cs" />
      <Compile Include="Assets\Scripts\PlayerMove.cs" />
      <Compile Include="Assets\Scripts\SwitchCamera.cs" />
   </ItemGroup>
