@@ -6,6 +6,7 @@ public class PlayerMove : MonoBehaviour {
 	public SwitchCamera cam;
 	public float speed = 500;
 	private bool isRotating_Left = false;
+	private bool isRotating_Right = false;
 	private Quaternion rotate_start;
 	private Quaternion rotate_end;
 	
@@ -26,11 +27,25 @@ public class PlayerMove : MonoBehaviour {
 				isRotating_Left = false;	
 			}
 		}
+		if(isRotating_Right){
+			transform.Rotate(0,90f*Time.deltaTime, 0);
+			rotate_end = transform.rotation;
+			if(Quaternion.Angle(rotate_start,rotate_end) > 90){
+				isRotating_Right = false;
+			}
+			
+		}
+		
 	}
 	
 	public void rotateLeft(){
 		rotate_start = transform.rotation;
 		isRotating_Left = true;
+	}
+	
+	public void rotateRight(){
+		rotate_start = transform.rotation;
+		isRotating_Right = true;
 	}
 	
 	IEnumerator Rotation (Transform thisTransform, Vector3 degrees, float time) {
