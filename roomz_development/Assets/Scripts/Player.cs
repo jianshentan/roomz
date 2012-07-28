@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Player : MonoBehaviour 
 {
-	
 	public SwitchCamera cam;
 	public float speed;
 	public float rotateSpeed;
@@ -55,14 +54,6 @@ public class Player : MonoBehaviour
 			{
 				move("backward");
 			}	
-		}
-		else
-		{
-			//Debug.LogWarning("Player is currently active! Action cannot be performed when player is active");	
-		}
-		
-		if(!playerActive)
-		{
 			if(Input.GetKeyUp("space"))
 			{
 				if(cam.getRotationState() == "left")
@@ -74,6 +65,15 @@ public class Player : MonoBehaviour
 			{
 				cam.toggleRotationState();
 			}
+			//----debugging tool----
+			if(Input.GetKeyUp ("p"))
+			{
+				if (detect("forward"))
+					Debug.Log("forward!");
+				if (detect("backward"))
+					Debug.Log("backward!");
+			}
+			//----------------------
 		}
 		else
 		{
@@ -86,9 +86,9 @@ public class Player : MonoBehaviour
 		{
 			playerActive = true;
 			if(isMoving_Forward)
-				transform.Translate(-speed*Time.deltaTime, 0, 0);
+				transform.Translate(0,0,speed*Time.deltaTime);//, 0, 0);
 			else
-				transform.Translate(speed*Time.deltaTime, 0, 0);
+				transform.Translate(0,0,-speed*Time.deltaTime);//, 0, 0);
 			moving_end_x = transform.position.x;
 			moving_end_z = transform.position.z;
 			if(Mathf.Abs(moving_end_x - moving_start_x) > 1 ||
@@ -136,20 +136,16 @@ public class Player : MonoBehaviour
 	{
 		Vector3 tempPos = transform.position;
 		
-		if (direction == "forward" && axis == Axis.X)
-			tempPos.x -= 1;
-		else if (direction == "forward" && axis == Axis.Y)
-			tempPos.z -= 1;
-		else if (direction == "backward" && axis == Axis.X)
-			tempPos.x += 1;
-		else if (direction == "backward" && axis == Axis.Y)
-			tempPos.z += 1;
+		if (direction == "forward")
+			tempPos = transform.position + transform.forward;
+		else if (direction == "backward")
+			tempPos = transform.position - transform.forward;
 		
 		if (Physics.OverlapSphere(tempPos, 0.2f).Length != 0)
-			{
-				//Debug.Log (Physics.OverlapSphere(tempPos, 0.1f)[0] + " is in the way! You cannot move in that direction");
-				return true;
-			}
+		{
+			Debug.Log (Physics.OverlapSphere(tempPos, 0.1f)[0] + " is in the way! You cannot move in that direction");
+			return true;
+		}
 		
 		return false;
 	}
