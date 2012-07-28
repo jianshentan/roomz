@@ -1,18 +1,23 @@
 using UnityEngine;
 using System.Collections;
 
-public class CameraFollow : MonoBehaviour {
-	
-	public Transform target;
+public class CameraFollow : MonoBehaviour 
+{
+	private Transform target;
 	public float camera_relative_xpos;
 	public float camera_relative_ypos;
 	public float camera_relative_zpos;
 	
-	void Start () {
+	void Start () 
+	{
+		//this gets the targeted player set in the parent, parent gameobject
+		target = transform.parent.parent.GetComponent<SwitchCamera>().player.gameObject.transform;
 	}
 	
-	void Update () {
-		if(!target){
+	void Update () 
+	{
+		if(!target)
+		{
 			Debug.LogError("No target to follow");	
 		}
 		Vector3 cameraPos = target.position;
