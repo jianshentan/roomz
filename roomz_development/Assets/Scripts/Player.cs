@@ -1,5 +1,7 @@
 using UnityEngine;
+using System;
 using System.Collections;
+using System.Globalization;
 
 public class Player : MonoBehaviour 
 {
@@ -28,6 +30,9 @@ public class Player : MonoBehaviour
 	private float moving_start_z;
 	private float moving_end_z;
 	
+	//private bool isMovingToClosest_Forward = false;
+	//private bool isMovingToClosest_Backward = false;
+	
 	void Update () 
 	{	
 	// ---this enables continous movement---
@@ -46,6 +51,14 @@ public class Player : MonoBehaviour
 	// ---this enables blocky movement---
 		if(!playerActive)
 		{
+			if(Input.GetKey("up"))
+			{
+				//gameObject.transform.Translate(0,0,speed * Time.deltaTime);
+			}
+			if(Input.GetKey("down"))
+			{
+				//gameObject.transform.Translate(0,0,-speed * Time.deltaTime);
+			}
 			if(Input.GetKeyUp("up"))
 			{
 				move("forward");
@@ -56,16 +69,14 @@ public class Player : MonoBehaviour
 			}	
 			if(Input.GetKeyUp("space"))
 			{
-				if(cam.getRotationState() == "left")
-					rotate ("left");
-				else
-					rotate ("right");
+				rotate ();
 			}	
 			if(Input.GetKeyUp("left shift"))
 			{
 				cam.toggleRotationState();
 			}
 			//----debugging tool----
+			/*
 			if(Input.GetKeyUp ("p"))
 			{
 				if (detect("forward"))
@@ -73,6 +84,7 @@ public class Player : MonoBehaviour
 				if (detect("backward"))
 					Debug.Log("backward!");
 			}
+			*/
 			//----------------------
 		}
 		else
@@ -100,6 +112,27 @@ public class Player : MonoBehaviour
 				correctPosition();
 			}
 		}
+		
+		// ---moving to closest--- (failed method - to return to this)
+		/*if(isMovingToClosest_Forward || isMovingToClosest_Backward)
+		{
+			playerActive = true;
+			if(isMovingToClosest_Forward)
+				transform.Translate(0,0,speed*Time.deltaTime);//, 0, 0);
+			else
+				transform.Translate(0,0,-speed*Time.deltaTime);
+			moving_start_x = transform.position.x;
+			moving_start_z = transform.position.z;
+			if (moving_start_x > moving_end_x || 
+				moving_start_z > moving_end_z)
+			{
+				isMovingToClosest_Backward = false;
+				isMovingToClosest_Forward = false;
+				playerActive = false;
+				correctPosition();
+			}
+
+		}*/
 		
 		// ---rotating---
 		if(isRotating_Left || isRotating_Right)
@@ -143,12 +176,59 @@ public class Player : MonoBehaviour
 		
 		if (Physics.OverlapSphere(tempPos, 0.2f).Length != 0)
 		{
-			Debug.Log (Physics.OverlapSphere(tempPos, 0.1f)[0] + " is in the way! You cannot move in that direction");
+			//Debug.Log (Physics.OverlapSphere(tempPos, 0.1f)[0] + " is in the way! You cannot move in that direction");
 			return true;
 		}
 		
 		return false;
 	}
+	
+	//failed method - (to return to this)
+	/*void moveToClosest(string direction)
+	{
+		if (!detect (direction))
+		{
+			if (direction == "forward")
+			{
+				isMovingToClosest_Forward = true;	
+			}
+			else
+			{
+				isMovingToClosest_Backward = true;	
+			}
+			moving_start_x = transform.position.x;
+			//This helps gets the whole number that the player should move to
+			//If the player stops from between the whole number to +0.5 (ie 9.3) then +1 to the number and round (ie to get 10)
+			//else the player just rounds
+			string[] stringArray_x = Convert.ToString(moving_start_x).Split(new Char[]{'.'}); 
+			if (stringArray_x.Length == 2)
+			{
+				if (Convert.ToSingle("0." + stringArray_x[1]) < 0.5f)
+				{
+					moving_end_x = Mathf.Round(Convert.ToSingle (stringArray_x[0]) + 1 + Convert.ToSingle("0." + stringArray_x[1]));
+				}
+				else
+				{
+					moving_end_x = Mathf.Round(Convert.ToSingle (stringArray_x[0]) + Convert.ToSingle("0." + stringArray_x[1]));
+				}
+			}
+			//----------------
+			
+			moving_start_z = transform.position.z;
+			string[] stringArray_z = Convert.ToString(moving_start_z).Split(new Char[]{'.'}); 
+			if (stringArray_z.Length == 2)
+			{
+				if (Convert.ToSingle("0." + stringArray_z[1]) < 0.5f)
+				{
+					moving_end_z = Mathf.Round(Convert.ToSingle (stringArray_z[0]) + 1 + Convert.ToSingle("0." + stringArray_z[1]));
+				}
+				else
+				{
+					moving_end_z = Mathf.Round(Convert.ToSingle (stringArray_z[0]) + Convert.ToSingle("0." + stringArray_z[1]));
+				}
+			}
+		}
+	}*/
 	
 	public void move(string direction)
 	{
@@ -168,16 +248,13 @@ public class Player : MonoBehaviour
 		}
 	}
 		
-	public void rotate(string direction)
+	public void rotate()
 	{
-		if(direction == "right")
-		{
-			isRotating_Right = true;
-		}
-		else
-		{
+		if(cam.getRotationState() == "left")
 			isRotating_Left = true;
-		}
+		else
+			isRotating_Right = true;
+		
 		rotate_start = transform.rotation;
 	}
 	

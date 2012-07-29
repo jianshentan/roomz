@@ -61,12 +61,13 @@ public class SwitchCamera : MonoBehaviour {
 		Debug.Log (rotationState);
 	}
 	
+	public void setRotationState(string direction)
+	{
+		rotationState = direction;	
+	}
+	
 	public void rotateLeft()
 	{
-		//player.setPlayerActive(true);
-		//player.rotate("left");
-		//yield return new WaitForSeconds(1f);
-		
 		if(cameraX_1.active)
 		{
 			cameraX_1.SetActiveRecursively(false);
@@ -87,16 +88,10 @@ public class SwitchCamera : MonoBehaviour {
 			cameraZ_4.SetActiveRecursively(false);
 			cameraX_1.SetActiveRecursively(true);
 		}	
-		//yield return new WaitForSeconds(2);
-		//player.setPlayerActive(false);
 	}
 	
 	public void rotateRight()
 	{
-		//player.setPlayerActive(true);
-		//player.rotate("right");
-		//yield return new WaitForSeconds(1f);
-		
 		if(cameraX_1.active)
 		{
 			cameraX_1.SetActiveRecursively(false);
@@ -117,10 +112,6 @@ public class SwitchCamera : MonoBehaviour {
 			cameraZ_4.SetActiveRecursively(false);
 			cameraX_3.SetActiveRecursively(true);
 		}
-		
-		//yield return new WaitForSeconds(2);
-
-		//player.setPlayerActive(false);
 	}
 
 	
