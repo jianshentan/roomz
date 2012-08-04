@@ -3,8 +3,11 @@ using System;
 using System.Collections;
 using System.Globalization;
 
+public delegate void callback(); 
+
 public class Player : MonoBehaviour 
 {
+	public static event callback onChangeAxis; // this is not currently in use
 	public SwitchCamera cam;
 	public float speed;
 	public float rotateSpeed;
@@ -29,6 +32,9 @@ public class Player : MonoBehaviour
 	private float moving_end_x;
 	private float moving_start_z;
 	private float moving_end_z;
+	
+	private GameObject[] bag = new GameObject[1] {null}; //this should only hold one gameObject
+	
 	
 	//private bool isMovingToClosest_Forward = false;
 	//private bool isMovingToClosest_Backward = false;
@@ -67,13 +73,17 @@ public class Player : MonoBehaviour
 			{
 				move("backward");
 			}	
-			if(Input.GetKeyUp("space"))
+			if(Input.GetKeyUp("left shift"))
 			{
 				rotate ();
 			}	
-			if(Input.GetKeyUp("left shift"))
+			if(Input.GetKeyUp("z"))
 			{
 				cam.toggleRotationState();
+			}
+			if(Input.GetKeyUp ("space"))
+			{
+				pickup();	
 			}
 			//----debugging tool----
 			/*
@@ -109,7 +119,7 @@ public class Player : MonoBehaviour
 				isMoving_Forward = false;
 				isMoving_Backward = false;
 				playerActive = false;
-				correctPosition();
+				correctPosition(transform);
 			}
 		}
 		
@@ -129,11 +139,11 @@ public class Player : MonoBehaviour
 				isMovingToClosest_Backward = false;
 				isMovingToClosest_Forward = false;
 				playerActive = false;
-				correctPosition();
+				correctPosition(transform);
 			}
 
 		}*/
-		
+			
 		// ---rotating---
 		if(isRotating_Left || isRotating_Right)
 		{
@@ -153,7 +163,7 @@ public class Player : MonoBehaviour
 				isRotating_Left = false;
 				isRotating_Right = false;
 				
-				correctPosition();
+				correctPosition(transform);
 				
 				if(axis == Axis.X)
 					axis = Axis.Y;
@@ -183,6 +193,57 @@ public class Player : MonoBehaviour
 		return false;
 	}
 	
+	// this method returns an array of objects 
+	Collider[] detectCollectable(string direction)
+	{
+		Vector3 tempPos = transform.position;
+		
+		if (direction == "forward")
+			tempPos = transform.position + transform.forward;
+		else if (direction == "backward")
+			tempPos = transform.position - transform.forward;
+
+		return Physics.OverlapSphere(tempPos, 0.2f);	
+	}
+	
+	void pickup()
+	{
+		if(bag[0] == null) // if bag is empty, check to see if the player can pick up the object
+		{
+			if(detect("forward")) // if there is something infront of the player
+			{
+				Collider[] colliders = detectCollectable("forward");
+				if (colliders[0].gameObject.GetComponent<Collectable>() != null) //if the thing in front is a "collectable"
+				{
+					bag[0] = colliders[0].gameObject;
+					colliders[0].gameObject.SetActiveRecursively(false);
+					Debug.Log (bag[0]);
+				}
+				else
+				{
+					Debug.Log ("the object in front is not collectable");	
+				}
+			}
+			else
+			{
+				Debug.Log("there is nothing in front of the player");	
+			}
+		}
+		else //the bag is full, drop object
+		{
+			if(!detect("forward")) //if there is nothing infront of the player
+			{
+				Vector3 position = transform.position + transform.forward;
+				Quaternion rotation = transform.rotation;
+				bag[0].transform.position = position;
+				bag[0].transform.rotation = rotation;
+				bag[0].SetActiveRecursively(true);
+				bag[0] = null;
+			}
+		}
+	}
+			
+			
 	//failed method - (to return to this)
 	/*void moveToClosest(string direction)
 	{
@@ -250,6 +311,9 @@ public class Player : MonoBehaviour
 		
 	public void rotate()
 	{
+		if (onChangeAxis != null)
+			onChangeAxis();
+		
 		if(cam.getRotationState() == "left")
 			isRotating_Left = true;
 		else
@@ -276,23 +340,22 @@ public class Player : MonoBehaviour
 	 * this method sets the position of the player to the center-point of each block and
 	 * sets the rotation of the player to round to the closest 90 degrees
 	 */
-	void correctPosition()
+	void correctPosition(Transform targetTransform)
 	{
 		if (((transform.position.x % 1) != 0) ||
 			((transform.position.y % 1) != 0) ||
 			((transform.position.z % 1) != 0))
-			transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
+			targetTransform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(targetTransform.position.y), Mathf.Round(targetTransform.position.z));
 		
-		if ((transform.rotation.eulerAngles.y > 315f && transform.rotation.eulerAngles.y < 360f) ||
-			(transform.rotation.eulerAngles.y > 0f && transform.rotation.eulerAngles.y < 45f))
-			transform.eulerAngles = new Vector3(0,0,0);
-		else if (transform.rotation.eulerAngles.y > 45f && transform.rotation.eulerAngles.y < 135f)
-			transform.eulerAngles = new Vector3(0,90,0);
-		else if (transform.rotation.eulerAngles.y > 135f && transform.rotation.eulerAngles.y < 225f)
-			transform.eulerAngles = new Vector3(0,180,0);
-		else if (transform.rotation.eulerAngles.y > 225f && transform.rotation.eulerAngles.y < 315f)
-			transform.eulerAngles = new Vector3(0,270,0);
-		
+		if ((targetTransform.rotation.eulerAngles.y > 315f && targetTransform.rotation.eulerAngles.y < 360f) ||
+			(targetTransform.rotation.eulerAngles.y > 0f && targetTransform.rotation.eulerAngles.y < 45f))
+			targetTransform.eulerAngles = new Vector3(0,0,0);
+		else if (targetTransform.rotation.eulerAngles.y > 45f && targetTransform.rotation.eulerAngles.y < 135f)
+			targetTransform.eulerAngles = new Vector3(0,90,0);
+		else if (targetTransform.rotation.eulerAngles.y > 135f && targetTransform.rotation.eulerAngles.y < 225f)
+			targetTransform.eulerAngles = new Vector3(0,180,0);
+		else if (targetTransform.rotation.eulerAngles.y > 225f && targetTransform.rotation.eulerAngles.y < 315f)
+			targetTransform.eulerAngles = new Vector3(0,270,0);
 	}
 	
 	public void setPlayerActive(bool flag)
