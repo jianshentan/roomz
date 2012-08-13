@@ -293,7 +293,7 @@ public class Player : MonoBehaviour
 	
 	public void move(string direction)
 	{
-		if (!detect (direction))
+		if (!detect (direction) && !playerActive)
 		{
 			//Debug.Log (axis);
 			if(direction == "forward")
@@ -311,15 +311,18 @@ public class Player : MonoBehaviour
 		
 	public void rotate()
 	{
-		if (onChangeAxis != null)
-			onChangeAxis();
-		
-		if(cam.getRotationState() == "left")
-			isRotating_Left = true;
-		else
-			isRotating_Right = true;
-		
-		rotate_start = transform.rotation;
+		if(!playerActive)
+		{
+			if (onChangeAxis != null)
+				onChangeAxis();
+			
+			if(cam.getRotationState() == "left")
+				isRotating_Left = true;
+			else
+				isRotating_Right = true;
+			
+			rotate_start = transform.rotation;
+		}
 	}
 	
 	IEnumerator Rotation (Transform thisTransform, Vector3 degrees, float time) 
